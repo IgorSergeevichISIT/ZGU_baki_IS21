@@ -1,0 +1,56 @@
+CREATE TABLE "patients" (
+  "patient_id" integer PRIMARY KEY,
+  "full_name" varchar NOT NULL
+);
+
+CREATE TABLE "doctors" (
+  "doctor_id" integer PRIMARY KEY,
+  "specialty_id" integer,
+  "full_name" varchar NOT NULL
+);
+
+CREATE TABLE "record" (
+  "id" integer PRIMARY KEY,
+  "patient_id" integer,
+  "doctor_id" integer,
+  "day_of_the_week_id" integer,
+  "day_of_the_week" varchar NOT NULL,
+  "office" integer NOT NULL
+);
+
+CREATE TABLE "specialties" (
+  "specialty_id" integer PRIMARY KEY,
+  "name" varchar NOT NULL
+);
+
+CREATE TABLE "medical_records" (
+  "patient_id" integer,
+  "status" varchar NOT NULL,
+  "time" timestamp NOT NULL
+);
+
+CREATE TABLE "offices" (
+  "number" integer PRIMARY KEY,
+  "specialty_id" integer NOT NULL
+);
+
+CREATE TABLE "schedule" (
+  "day_of_the_week_id" integer PRIMARY KEY,
+  "doctor_id" integer NOT NULL,
+  "number_office" integer NOT NULL,
+  "day_of_the_week" varchar NOT NULL
+);
+
+ALTER TABLE "record" ADD FOREIGN KEY ("patient_id") REFERENCES "patients" ("patient_id");
+
+ALTER TABLE "medical_records" ADD FOREIGN KEY ("patient_id") REFERENCES "patients" ("patient_id");
+
+ALTER TABLE "schedule" ADD FOREIGN KEY ("number_office") REFERENCES "offices" ("number");
+
+ALTER TABLE "schedule" ADD FOREIGN KEY ("doctor_id") REFERENCES "doctors" ("doctor_id");
+
+ALTER TABLE "doctors" ADD FOREIGN KEY ("specialty_id") REFERENCES "specialties" ("specialty_id");
+
+ALTER TABLE "offices" ADD FOREIGN KEY ("specialty_id") REFERENCES "specialties" ("specialty_id");
+
+ALTER TABLE "record" ADD FOREIGN KEY ("day_of_the_week_id") REFERENCES "schedule" ("day_of_the_week_id");

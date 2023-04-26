@@ -1,0 +1,49 @@
+CREATE TABLE studenty
+(
+    zachetka_id int  PRIMARY KEY,
+    first_name varchar  NOT NULL,
+    second_name varchar  NOT NULL,
+    pass_id varchar UNIQUE
+);
+
+CREATE TABLE grupy
+(
+    name_grupy varchar PRIMARY KEY,
+    fk_number_zachetki integer,
+    fk_kafedra_name varchar
+);
+
+CREATE TABLE kafedra
+(
+    kafedra_name varchar PRIMARY KEY,
+    fk_fuckultet_name varchar
+);
+
+CREATE TABLE fuckultet
+(
+    fuckultet_name varchar NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE predmet
+(
+    fk_name_grupy varchar,
+    fk_prepod_fio varchar 
+);
+
+CREATE TABLE prepody
+(
+    prepod_fio varchar NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE kabinet
+(
+    kabinet_number int NOT NULL PRIMARY KEY,
+    fk_prepod_fio varchar
+);
+
+ALTER TABLE "grupy" ADD FOREIGN KEY ("fk_number_zachetki") REFERENCES "studenty" ("zachetka_id");
+ALTER TABLE "grupy" ADD FOREIGN KEY ("fk_kafedra_name") REFERENCES "kafedra" ("kafedra_name");
+ALTER TABLE "kafedra" ADD FOREIGN KEY ("fk_fuckultet_name") REFERENCES "fuckultet" ("fuckultet_name");
+ALTER TABLE "predmet" ADD FOREIGN KEY ("fk_name_grupy") REFERENCES "grupy" ("name_grupy");
+ALTER TABLE "predmet" ADD FOREIGN KEY ("fk_prepod_fio") REFERENCES "prepody" ("prepod_fio");
+ALTER TABLE "kabinet" ADD FOREIGN KEY ("fk_prepod_fio") REFERENCES "prepody" ("prepod_fio");
