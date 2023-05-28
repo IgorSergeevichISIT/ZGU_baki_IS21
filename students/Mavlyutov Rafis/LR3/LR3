@@ -1,0 +1,392 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.2
+-- Dumped by pg_dump version 15.2
+
+-- Started on 2023-05-22 19:02:19
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 215 (class 1259 OID 26076)
+-- Name: Aggregator; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Aggregator" (
+    contract_serial text NOT NULL,
+    name text NOT NULL,
+    contact_info text NOT NULL,
+    responcible_person text NOT NULL,
+    requisites text NOT NULL,
+    address text NOT NULL
+);
+
+
+ALTER TABLE public."Aggregator" OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 26102)
+-- Name: Cars; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Cars" (
+    id integer NOT NULL,
+    plate text NOT NULL,
+    model text NOT NULL,
+    color text,
+    livery_id text,
+    owner_id text,
+    average_gas_consumption double precision
+);
+
+
+ALTER TABLE public."Cars" OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1259 OID 26114)
+-- Name: Orders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Orders" (
+    id integer NOT NULL,
+    agg_id text,
+    partner_id text,
+    car_id integer,
+    payment_details text,
+    ride_details text,
+    "timestamp" timestamp without time zone
+);
+
+
+ALTER TABLE public."Orders" OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1259 OID 26067)
+-- Name: Partner; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."Partner" (
+    contract_serial text NOT NULL,
+    last_name text NOT NULL,
+    first_name text NOT NULL,
+    middle_name text,
+    contact_info character varying(12) NOT NULL,
+    payment_details text NOT NULL
+);
+
+
+ALTER TABLE public."Partner" OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 26088)
+-- Name: agg_livery; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.agg_livery (
+    name text NOT NULL,
+    agg_id text,
+    main_color text,
+    additional_color text,
+    scale text,
+    advertisment boolean
+);
+
+
+ALTER TABLE public.agg_livery OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1259 OID 26095)
+-- Name: agg_locations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.agg_locations (
+    agg_id text,
+    country text DEFAULT 'Russia'::text,
+    region text NOT NULL,
+    region_code integer,
+    city text,
+    timezone text,
+    CONSTRAINT agg_locations_region_code_check CHECK ((region_code <= 199))
+);
+
+
+ALTER TABLE public.agg_locations OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 26083)
+-- Name: agg_partners; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.agg_partners (
+    agg_id text,
+    partner_id text,
+    agreement text NOT NULL,
+    start_date date,
+    end_date date,
+    concluded_by text NOT NULL
+);
+
+
+ALTER TABLE public.agg_partners OWNER TO postgres;
+
+--
+-- TOC entry 3362 (class 0 OID 26076)
+-- Dependencies: 215
+-- Data for Name: Aggregator; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Aggregator" (contract_serial, name, contact_info, responcible_person, requisites, address) FROM stdin;
+Z0000	Таксопарк	Self	Пуманин В.	ИНН 2134	г. Казань, ул. Татарова, д. 1
+Y0001	Yandex Taxi	taxi@yandex.info	Кириенко С. А.	ИНН 5501	г. Москва, ул. Пажитник, д. 5
+Y0002	Uber	taxi@yandex.info	Кириенко С. А.	ИНН 5467	г. Москва, ул. Пажитник, д. 5
+G0001	Citymobil	stl@citimobil.info	Дмитриев К. Е.	ИНН 78686	г. Москва, ул. Уколова, д. 78
+N0001	Любимое	zfe@lyubimoe.ru	Карасев Б. А.	ИНН 9328686	г. Норильск, ул. Талнахская, д. 8А
+\.
+
+
+--
+-- TOC entry 3366 (class 0 OID 26102)
+-- Dependencies: 219
+-- Data for Name: Cars; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Cars" (id, plate, model, color, livery_id, owner_id, average_gas_consumption) FROM stdin;
+1	У001ЕО 77	Toyota Camry 2022	Черный	No Livery	0001	\N
+2	А001ОУ 77	KIA K5	Черный	Uber Default Dark	0000	\N
+3	Е374ЕВ 24	Mitsubishi Outlander 2018	Белый	Yandex Promo 2023	0002	\N
+4	М445КК 24	Renault Logan 2020	Красный	Любимое Стандарт	0000	\N
+\.
+
+
+--
+-- TOC entry 3367 (class 0 OID 26114)
+-- Dependencies: 220
+-- Data for Name: Orders; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Orders" (id, agg_id, partner_id, car_id, payment_details, ride_details, "timestamp") FROM stdin;
+1	Y0001	0001	1	2202 2947 4245 7584	ICPC:6447335	2023-05-22 10:36:12.41427
+2	Y0001	0001	1	2202 2947 4245 7584	ICPC:6447338	2023-05-22 10:36:12.41427
+3	Y0001	0001	1	2202 2947 4245 7584	ICPC:6447343	2023-05-22 10:36:12.41427
+\.
+
+
+--
+-- TOC entry 3361 (class 0 OID 26067)
+-- Dependencies: 214
+-- Data for Name: Partner; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Partner" (contract_serial, last_name, first_name, middle_name, contact_info, payment_details) FROM stdin;
+0000	Пуманин	Володимир		+78080807788	Self
+0001	Дмитриев	Джереми	Алоньевич	+79998876234	2202 2947 4245 7584
+0002	Степанов	Ватанабе	Викторович	+79298846246	2202 2947 4245 4353
+0003	Лапушкин	Мао	Муньячжоуевич	+79838871034	2202 9876 4245 7584
+0004	Микелянджело	Иван	Чурепашкович	+79558871067	2202 2947 7543 7584
+\.
+
+
+--
+-- TOC entry 3364 (class 0 OID 26088)
+-- Dependencies: 217
+-- Data for Name: agg_livery; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.agg_livery (name, agg_id, main_color, additional_color, scale, advertisment) FROM stdin;
+No Livery	Z0000				f
+Yandex Promo 2023	Y0001	Желтый	Фиолетовый	Large	t
+Uber Default Dark	Y0002	Черный	Синий	Large	f
+Uber Default Light	Y0002	Белый	Черный	Large	f
+Citymobil A	G0001	Оранжевый	Белый	Small	f
+Любимое Стандарт	N0001	Желтый	Красный	Medium	f
+\.
+
+
+--
+-- TOC entry 3365 (class 0 OID 26095)
+-- Dependencies: 218
+-- Data for Name: agg_locations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.agg_locations (agg_id, country, region, region_code, city, timezone) FROM stdin;
+Y0001	Russia	Москва	77	Москва	UTC +3
+Y0001	Russia	Красноярский край	24	Красноярск	UTC +7
+Y0002	Russia	Москва	77	Москва	UTC +3
+G0001	Russia	Москва	77	Москва	UTC +3
+N0001	Russia	Красноярский край	24	Норильск	UTC +7
+Y0001	Russia	Moscow	177	Moscow	UTC +3
+\.
+
+
+--
+-- TOC entry 3363 (class 0 OID 26083)
+-- Dependencies: 216
+-- Data for Name: agg_partners; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.agg_partners (agg_id, partner_id, agreement, start_date, end_date, concluded_by) FROM stdin;
+Y0001	0001	qw234	2020-11-11	2023-11-11	Кованьевич К. К.
+Y0001	0002	rq245	2022-01-01	2025-01-01	Сомалин В. А.
+Y0002	0001	qw213	2020-11-11	2023-11-11	Кованьевич К. К.
+G0001	0001	qw425	2020-11-11	2023-11-11	Кованьевич К. К.
+Y0002	0004	qw201	2021-02-12	2024-02-12	Кованьевич К. К.
+N0001	0003	nr436	2022-11-11	2025-11-11	Сомалин В. А.
+\.
+
+
+--
+-- TOC entry 3203 (class 2606 OID 26082)
+-- Name: Aggregator Aggregator_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Aggregator"
+    ADD CONSTRAINT "Aggregator_pkey" PRIMARY KEY (contract_serial);
+
+
+--
+-- TOC entry 3207 (class 2606 OID 26108)
+-- Name: Cars Cars_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Cars"
+    ADD CONSTRAINT "Cars_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3209 (class 2606 OID 26120)
+-- Name: Orders Orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Orders"
+    ADD CONSTRAINT "Orders_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3199 (class 2606 OID 26075)
+-- Name: Partner Partner_contact_info_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Partner"
+    ADD CONSTRAINT "Partner_contact_info_key" UNIQUE (contact_info);
+
+
+--
+-- TOC entry 3201 (class 2606 OID 26073)
+-- Name: Partner Partner_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Partner"
+    ADD CONSTRAINT "Partner_pkey" PRIMARY KEY (contract_serial);
+
+
+--
+-- TOC entry 3205 (class 2606 OID 26094)
+-- Name: agg_livery agg_livery_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.agg_livery
+    ADD CONSTRAINT agg_livery_pkey PRIMARY KEY (name);
+
+
+--
+-- TOC entry 3214 (class 2606 OID 26171)
+-- Name: Cars Cars_livery_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Cars"
+    ADD CONSTRAINT "Cars_livery_id_fkey" FOREIGN KEY (livery_id) REFERENCES public.agg_livery(name);
+
+
+--
+-- TOC entry 3215 (class 2606 OID 26161)
+-- Name: Cars Cars_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Cars"
+    ADD CONSTRAINT "Cars_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES public."Partner"(contract_serial);
+
+
+--
+-- TOC entry 3216 (class 2606 OID 26121)
+-- Name: Orders Orders_agg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Orders"
+    ADD CONSTRAINT "Orders_agg_id_fkey" FOREIGN KEY (agg_id) REFERENCES public."Aggregator"(contract_serial);
+
+
+--
+-- TOC entry 3217 (class 2606 OID 26131)
+-- Name: Orders Orders_car_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Orders"
+    ADD CONSTRAINT "Orders_car_id_fkey" FOREIGN KEY (car_id) REFERENCES public."Cars"(id);
+
+
+--
+-- TOC entry 3218 (class 2606 OID 26126)
+-- Name: Orders Orders_partner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."Orders"
+    ADD CONSTRAINT "Orders_partner_id_fkey" FOREIGN KEY (partner_id) REFERENCES public."Partner"(contract_serial);
+
+
+--
+-- TOC entry 3212 (class 2606 OID 26151)
+-- Name: agg_livery agg_livery_agg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.agg_livery
+    ADD CONSTRAINT agg_livery_agg_id_fkey FOREIGN KEY (agg_id) REFERENCES public."Aggregator"(contract_serial);
+
+
+--
+-- TOC entry 3213 (class 2606 OID 26156)
+-- Name: agg_locations agg_locations_agg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.agg_locations
+    ADD CONSTRAINT agg_locations_agg_id_fkey FOREIGN KEY (agg_id) REFERENCES public."Aggregator"(contract_serial);
+
+
+--
+-- TOC entry 3210 (class 2606 OID 26141)
+-- Name: agg_partners agg_partners_agg_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.agg_partners
+    ADD CONSTRAINT agg_partners_agg_id_fkey FOREIGN KEY (agg_id) REFERENCES public."Aggregator"(contract_serial);
+
+
+--
+-- TOC entry 3211 (class 2606 OID 26146)
+-- Name: agg_partners agg_partners_partner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.agg_partners
+    ADD CONSTRAINT agg_partners_partner_id_fkey FOREIGN KEY (partner_id) REFERENCES public."Partner"(contract_serial);
+
+
+-- Completed on 2023-05-22 19:02:20
+
+--
+-- PostgreSQL database dump complete
+--
+
